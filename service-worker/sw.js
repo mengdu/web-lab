@@ -8,7 +8,6 @@ self.addEventListener('install', event => {
             .then(function(cache) {
                 return cache.addAll([
                     // 枚举需要缓存的文件，不同域名的也行（要支持跨域）
-                    'hello.txt'
                 ]);
             })
     );
@@ -32,9 +31,13 @@ self.addEventListener('fetch', (event) => {
     console.log('fetch', event.request)
     // network first
     event.respondWith(fetch(event.request).then(res => {
-        return caches.open(CACHE_NAME).then(cache => {
-            return cache.put(event.request, res.clone()).then(() => res)
+        const cresult = res.clone()
+        caches.open(CACHE_NAME).then(cache => {
+            return cache.put(event.request, cresult)
+        }).catch(err => {
+            console.error('缓存失败:', err)
         })
+        return res
     }).catch(err => {
         console.log("请求失败了", err)
         return caches.match(event.request).then(result => {
