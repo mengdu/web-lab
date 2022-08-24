@@ -12,13 +12,15 @@
 <button id="btn3">Append Image</button>
 <button id="btn4">Fetch API</button>
 <button id="btn5">XHR API</button>
+<button id="btn6">Clean All Caches</button>
+<button id="btn7">Service Worker Un Register</button>
 <p></p>
-<video src="https://mengdu.github.io/poster/movie.webm" controls></video>
+<video src="https://zhiyundata.oss-cn-shenzhen.aliyuncs.com/public/demo/movie.webm" controls></video>
 <img src="https://oss.zhiyun-tech.com/zyplaytest/share/8399/2022-07-28-18:02:35.png" alt="" width="200" />
 <img src="https://oss.zhiyun-tech.com/zyplaytest/share/8399/2022-06-09-18:22:53.jpeg" crossorigin="anonymous" alt="" width="200" />
 <script>
     btn1.onclick = () => {
-        fetch('/hello.text').then(res => {
+        fetch('./hello.txt').then(res => {
             res.blob().then(b => {
                 b.text().then(t => {
                     console.log(t)
@@ -66,9 +68,32 @@
         xhr.send()
     }
 
+    btn6.onclick = () => {
+        caches.keys().then(keys => {
+            caches.delete(keys[0]).then(bool => {
+                console.log(bool)
+            })
+        })
+    }
+
+    btn7.onclick = () => {
+        navigator.serviceWorker.getRegistrations().then(registrations => {
+            console.log(registrations)
+            for (const i in registrations) {
+                registrations[i].unregister().then(bool => {
+                    console.log(bool)
+                })
+            }
+        })
+    }
+
     navigator.serviceWorker.register('./sw.js').then(() => {
         console.log('ServiceWorker register')
     })
+
+    // navigator.serviceWorker.addEventListener('controllerchange', () => {
+    //     window.location.reload()
+    // })
 </script>
 </body>
 </html>

@@ -32,14 +32,15 @@ self.addEventListener('fetch', (event) => {
     // network first
     event.respondWith(fetch(event.request).then(res => {
         const cresult = res.clone()
+        // 请求响应不要等缓存设置完成（视频分片加载206会报错）
         caches.open(CACHE_NAME).then(cache => {
             return cache.put(event.request, cresult)
         }).catch(err => {
-            console.error('缓存失败:', err)
+            console.error(`${event.request.url} 缓存失败:`, err)
         })
         return res
     }).catch(err => {
-        console.log("请求失败了", err)
+        console.error(`${event.request.url} 请求失败了`, err)
         return caches.match(event.request).then(result => {
             console.log(`${event.request.url} 缓存结果`, result)
             if (result) return result
