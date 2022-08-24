@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+<button id="btn1">Fetch Local</button>
+<button id="btn2">Fetch Image</button>
+<button id="btn3">Append Image</button>
+<button id="btn4">Fetch API</button>
+<button id="btn5">XHR API</button>
+<p></p>
+<img src="https://oss.zhiyun-tech.com/zyplaytest/share/8399/2022-07-28-18:02:35.png" alt="" width="200" />
+<img src="https://oss.zhiyun-tech.com/zyplaytest/share/8399/2022-06-09-18:22:53.jpeg" crossorigin="anonymous" alt="" width="200" />
+<script>
+    btn1.onclick = () => {
+        fetch('/hello.text').then(res => {
+            res.blob().then(b => {
+                b.text().then(t => {
+                    console.log(t)
+                })
+            })
+        })
+    }
+
+    btn2.onclick = () => {
+        fetch('https://oss.zhiyun-tech.com/zyplaytest/share/8399/2022-07-28-18:02:35.png', {
+            // mode: "no-cors"
+        }).then(res => {
+            res.blob().then(res => {
+                console.log(res)
+                const img = document.createElement('img')
+                img.src = URL.createObjectURL(res)
+                img.width = '200'
+                document.body.appendChild(img)
+            })
+        }).catch(err => console.error(err))
+    }
+
+    btn3.onclick = () => {
+        const img = document.createElement('img')
+        img.src = 'https://oss.zhiyun-tech.com/zyplaytest/share/8399/2022-07-28-18:02:35.png'
+        img.crossOrigin = 'anonymous'
+        img.width = '200'
+        document.body.appendChild(img)
+    }
+
+    btn4.onclick = () => {
+        fetch('https://cnodejs.org/api/v1/topics').then(res => {
+            res.json().then(result => {
+                console.log(result)
+            })
+        })
+    }
+
+    btn5.onclick = () => {
+        const xhr = new XMLHttpRequest()
+        xhr.open('GET', 'https://api.github.com')
+        xhr.onload = function () {
+            console.log(JSON.parse(xhr.responseText))
+        }
+        xhr.send()
+    }
+
+    navigator.serviceWorker.register('./sw.js').then(() => {
+        console.log('ServiceWorker register')
+    })
+</script>
+</body>
+</html>
